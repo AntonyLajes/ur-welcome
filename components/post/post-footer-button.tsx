@@ -1,11 +1,8 @@
 import { useState } from "react"
 
-import { Divider } from "../ui/divider";
 import { HStack } from "../ui/hstack";
 import { Icon } from "../ui/icon";
 import { Text } from "../ui/text";
-
-import { Button, ButtonIcon, ButtonText } from "../ui/button";
 import { Pressable } from "../ui/pressable";
 
 type PostFooterButtonProps = {
