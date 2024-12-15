@@ -4,27 +4,29 @@ import { HStack } from "../ui/hstack";
 import { Icon } from "../ui/icon";
 import { Text } from "../ui/text";
 import { Pressable } from "../ui/pressable";
+import { PressableProps } from "react-native"
+import { router } from "expo-router";
 
 type PostFooterButtonProps = {
-    title: "Curtir" | "Comentar",
+    mode: "Curtir" | "Comentar",
     icon: React.ElementType
 }
 
-export default function PostFooterButton({ title, icon }: PostFooterButtonProps) {
+export default function PostFooterButton({ mode, icon }: PostFooterButtonProps) {
 
     const [isLiked, setIsLiked] = useState(false)
-    const dynamicColor = isLiked && title === "Curtir" ? "color-blue-500" : "color-typography-700"
+    const dynamicColor = isLiked && mode === "Curtir" ? "color-blue-500" : "color-typography-700"
 
     return (
         <Pressable
-            onPress={() => {title === "Curtir" ? setIsLiked((state) => !state) : console.log("Abrir comentário")}}
+            onPress={() => mode === "Curtir" ? setIsLiked(state => !state) : router.navigate("/comments")}
         >
             <HStack
                 className="items-center"
                 space="xs"
             >
                 <Icon as={icon} className={`${dynamicColor}`} />
-                <Text className={`${dynamicColor}`}>{title}</Text>
+                <Text className={`${dynamicColor}`}>{mode}</Text>
             </HStack>
         </Pressable>
     )
