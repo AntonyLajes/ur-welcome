@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FlatList } from "react-native";
 
 import { Stack } from "expo-router";
@@ -7,14 +7,15 @@ import { Box } from "@/components/ui/box";
 import Post from "@/components/post";
 import CreatePost from "@/components/create-post";
 import { Icon } from "@/components/ui/icon";
-
-import { UserIcon } from "lucide-react-native"
 import { Pressable } from "@/components/ui/pressable";
 import { Drawer, DrawerBackdrop, DrawerBody, DrawerContent, DrawerHeader } from "@/components/ui/drawer";
-import { Text } from "@/components/ui/text";
-import { VStack } from "@/components/ui/vstack";
-import { Input, InputField } from "@/components/ui/input";
-import { Button, ButtonText } from "@/components/ui/button";
+import { SignUpModel } from "@/components/sign-up";
+import SignUp from "@/components/sign-up";
+import SignIn from "@/components/sign-in";
+
+import { UserIcon } from "lucide-react-native"
+import { database } from "../data/local/database/config";
+import { User } from "../data/local/database/models/user-model";
 
 type PostData = number | { key: string }
 
@@ -22,7 +23,25 @@ export default function Home() {
     const posts: PostData[] = [{ key: 'createPost' }, 1, 2, 3, 4, 5]
 
     const [showDrawer, setShowDrawer] = useState(false)
-    const [isCreate, setIsCreate] = useState(false)
+    const [isSignUp, setIsSignUp] = useState(false)
+
+    const onSignUp = async (data: SignUpModel) => {
+        await database.write(async () => {
+            await database.get<User>('users').create(user => {
+                user.name = data.name
+                user.email = data.email
+                user.password = data.password
+            })
+        })
+    }
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const data = await database.get<User>('users').query().fetch()
+            console.log(`data =>`, data)
+        }
+        fetchData()
+    }, [])
 
     return (
         <>
@@ -55,68 +74,14 @@ export default function Home() {
                     </DrawerHeader>
                     <DrawerBody>
                         {
-                            isCreate ?
-                                <VStack
-                                    space="sm"
-                                >
-                                    <Input>
-                                        <InputField placeholder="name" />
-                                    </Input>
-                                    <Input>
-                                        <InputField placeholder="email" />
-                                    </Input>
-                                    <Input>
-                                        <InputField placeholder="password" />
-                                    </Input>
-                                    <VStack
-                                        space="sm"
-                                    >
-                                        <Button>
-                                            <ButtonText>
-                                                Registrar
-                                            </ButtonText>
-                                        </Button>
-                                        <Button
-                                            onPress={() => setIsCreate(false)}
-                                            variant="outline"
-                                        >
-                                            <ButtonText>
-                                                Voltar
-                                            </ButtonText>
-                                        </Button>
-                                    </VStack>
-                                </VStack> :
-                                <VStack
-                                    space="sm"
-                                >
-                                    <Input>
-                                        <InputField placeholder="email" />
-                                    </Input>
-                                    <Input>
-                                        <InputField placeholder="password" />
-                                    </Input>
-                                    <VStack>
-                                        <Button
-                                            variant="outline"
-                                        >
-                                            <ButtonText>
-                                                Entrar
-                                            </ButtonText>
-                                        </Button>
-                                        <Text
-                                            className="text-center"
-                                        >
-                                            ou
-                                        </Text>
-                                        <Button
-                                            onPress={() => setIsCreate(true)}
-                                        >
-                                            <ButtonText>
-                                                Registrar
-                                            </ButtonText>
-                                        </Button>
-                                    </VStack>
-                                </VStack>
+                            isSignUp ?
+                            <SignUp
+                                onBack={() => setIsSignUp(false)}
+                                onSignUp={onSignUp}
+                            /> :
+                            <SignIn
+                                onNavigateSignUp={() => setIsSignUp(true)}
+                            />
                         }
                     </DrawerBody>
                 </DrawerContent>
