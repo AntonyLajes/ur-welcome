@@ -41,6 +41,7 @@
     "@gluestack-ui/tooltip": "^0.1.37",
     "@gorhom/bottom-sheet": "^5.0.6",
     "@legendapp/motion": "^2.4.0",
+    "@nozbe/watermelondb": "^0.27.1",
     "babel-plugin-module-resolver": "^5.0.2",
     "expo": "~51.0.39",
     "expo-constants": "~16.0.2",
@@ -52,12 +53,12 @@
     "react": "18.2.0",
     "react-native": "0.74.5",
     "react-native-css-interop": "^0.1.22",
+    "react-native-gesture-handler": "~2.16.1",
     "react-native-reanimated": "^3.16.5",
     "react-native-safe-area-context": "^5.0.0",
     "react-native-screens": "3.31.1",
     "react-native-svg": "^15.2.0",
-    "tailwindcss": "^3.4.16",
-    "react-native-gesture-handler": "~2.16.1"
+    "tailwindcss": "^3.4.16"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

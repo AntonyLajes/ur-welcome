@@ -17,9 +17,17 @@ export default function PostFooterButton({ mode, icon }: PostFooterButtonProps) 
     const [isLiked, setIsLiked] = useState(false)
     const dynamicColor = isLiked && mode === "Curtir" ? "color-blue-500" : "color-typography-700"
 
+    const onLike = () => {
+        setIsLiked(state => !state)
+    }
+
+    const onComment = () => {
+        router.navigate("/comments")
+    }
+
     return (
         <Pressable
-            onPress={() => mode === "Curtir" ? setIsLiked(state => !state) : router.navigate("/comments")}
+            onPress={() => mode === "Curtir" ? onLike() : onComment()}
         >
             <HStack
                 className="items-center"

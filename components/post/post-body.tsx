@@ -1,3 +1,4 @@
+import React from "react";
 import { Image } from "../ui/image";
 import { Text } from "../ui/text";
 
