@@ -13,7 +13,7 @@ import SignUp from "@/components/sign-up";
 import SignIn from "@/components/sign-in";
 
 import { UserIcon } from "lucide-react-native"
-import { database } from "../data/local/database/config";
+import { database, postDatabase, userDatabase } from "../data/local/database/config";
 import { User } from "../data/local/database/models/user-model";
 import { useUser } from "../stores/user";
 import Logged from "@/components/logged";
@@ -28,10 +28,16 @@ export default function Home() {
 
     const userLogged = useUser((state) => state.userLogged)
 
+    const onConnect = () => {
+        setShowDrawer(true)
+    }
+
     useEffect(() => {
         const fetchData = async () => {
-            const data = await database.get<User>('users').query().fetch()
-            console.log(`data =>`, data)
+            const userData = await userDatabase.query().fetch()
+            const postData = await postDatabase.query().fetch()
+            console.log(`userData =>`, userData)
+            console.log(`postData =>`, postData)
         }
         fetchData()
     }, [])
@@ -85,7 +91,7 @@ export default function Home() {
                 data={posts}
                 renderItem={({ item }) => {
                     if (typeof item === "object" && 'key' in item) {
-                        return <CreatePost />
+                        return <CreatePost onConnect={onConnect}/>
                     } else {
                         return <Post />
                     }

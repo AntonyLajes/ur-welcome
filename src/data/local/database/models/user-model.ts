@@ -1,5 +1,6 @@
 import { Model } from "@nozbe/watermelondb";
-import { text } from "@nozbe/watermelondb/decorators";
+import { relation, text } from "@nozbe/watermelondb/decorators";
+import { Post } from "./post-model";
 
 export class User extends Model {
 
@@ -13,5 +14,8 @@ export class User extends Model {
 
     @text('password')
     password!: string
+    
+    @relation('posts', 'author_id') // Relação com posts (Um usuário pode ter muitos Posts)
+    posts!: Post[]
 
 } 

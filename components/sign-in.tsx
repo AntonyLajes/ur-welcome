@@ -75,7 +75,10 @@ export default function SignIn({ onNavigateSignUp: onCreate }: Props) {
                         <Text className="text-error-500">Erro ao se autenticar. Verifique o email e a senha.</Text>
                     )
                 }
-                <VStack>
+                <VStack
+                    className="mt-4"
+                    space="xs"
+                >
                     <Button
                         variant="outline"
                         onPress={handleSubmit(onSignIn)}
