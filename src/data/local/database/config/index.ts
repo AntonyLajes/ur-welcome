@@ -3,6 +3,7 @@ import migrations from "../migrations"
 import { schemas } from "../schemas"
 import { Database } from "@nozbe/watermelondb"
 import { models } from "../models"
+import { User } from "../models/user-model"
 
 const adapter = new SQLiteAdapter({
     schema: schemas,
@@ -13,3 +14,5 @@ export const database = new Database({
     adapter,
     modelClasses: models
 })
+
+export const userDatabase = database.get<User>('users')

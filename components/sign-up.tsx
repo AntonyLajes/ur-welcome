@@ -1,10 +1,17 @@
 import { useState } from "react";
-import Input from "./input";
-import { Button, ButtonText } from "./ui/button";
-import { VStack } from "./ui/vstack";
+
 import { z } from "zod";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+
+import colors from "tailwindcss/colors"
+
+import Input from "./input";
+import { VStack } from "./ui/vstack";
+import { Button, ButtonSpinner, ButtonText } from "./ui/button";
+
+import { UserRepository } from "@/src/data/local/database/repository/user-repository";
+import { FieldError } from "@/src/data/local/database/utils/FieldError";
 
 const signUpSchema = z.object({
     name: z.string({ message: 'Este campo é obrigatório.' }).min(1, 'Insira um nome válido.'),
@@ -23,10 +30,24 @@ export default function SignUp({ onBack }: Props) {
     const signUpForm = useForm<SignUpSchema>({
         resolver: zodResolver(signUpSchema)
     })
-    const { handleSubmit } = signUpForm
+    const { handleSubmit, setError } = signUpForm
 
-    const onSignIn = async (data: SignUpSchema) => {
-        console.log(`data =>`, data)
+    const [signInIsLoading, setSignInIsLoading] = useState(false)
+
+    const userRepository = new UserRepository()
+
+    const onSignUp = async (data: SignUpSchema) => {
+        try {
+            setSignInIsLoading(true)
+            const createdUser = await userRepository.insert(data)
+            console.log(`onSignUp createdUser =>`, createdUser)
+        } catch (error) {
+            if (error instanceof FieldError) {
+                setError(error.field, { type: "value", message: error.message })
+            }
+        } finally {
+            setSignInIsLoading(false)
+        }
     }
 
     return (
@@ -45,16 +66,21 @@ export default function SignUp({ onBack }: Props) {
                 <Input
                     name="password"
                     placeholder="senha"
+                    secureTextEntry
                 />
                 <VStack
                     space="sm"
                 >
                     <Button
-                        onPress={handleSubmit(onSignIn)}
+                        onPress={handleSubmit(onSignUp)}
                     >
-                        <ButtonText>
-                            Registrar
-                        </ButtonText>
+                        {
+                            signInIsLoading ?
+                                <ButtonSpinner color={colors.gray[500]} /> :
+                                <ButtonText>
+                                    Registrar
+                                </ButtonText>
+                        }
                     </Button>
                     <Button
                         onPress={onBack}

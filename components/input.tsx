@@ -18,7 +18,6 @@ export default function Input({ name, ...props }: Props) {
     })
 
     const fieldError = errors[name]
-    console.log(`fieldError =>`, fieldError)    
 
     return (
         <VStack>
@@ -32,7 +31,7 @@ export default function Input({ name, ...props }: Props) {
                 />
             </GSInput>
             {
-                fieldError && (
+                fieldError && fieldError.message && (
                     <Text
                         className="text-error-500"
                     >
