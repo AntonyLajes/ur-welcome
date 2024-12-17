@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { z } from "zod"
 import { FormProvider, useForm } from "react-hook-form";
@@ -13,6 +13,7 @@ import { UserRepository } from "@/src/data/local/database/repository/user-reposi
 import { UserNotFoundError } from "@/src/data/local/database/utils/UserNotFoundError";
 
 import colors from "tailwindcss/colors"
+import { useUser } from "@/src/stores/user";
 
 const signInSchema = z.object({
     email: z.string({ message: 'Este campo é obrigatório.' }).email({ message: 'Insira um email válido.' }).min(1, 'Insira um email.'),
@@ -33,6 +34,8 @@ export default function SignIn({ onNavigateSignUp: onCreate }: Props) {
 
     const [signInError, setSignInError] = useState(false)
     const [signInIsLoading, setSignInIsLoading] = useState(false)
+    
+    const setUserLogged = useUser((state) => state.setUserLogged) 
 
     const userRepository = new UserRepository()
 
@@ -40,9 +43,9 @@ export default function SignIn({ onNavigateSignUp: onCreate }: Props) {
         try {
             setSignInError(false)
             setSignInIsLoading(true)
-            await userRepository.login(data)
+            const loggedUser = await userRepository.login(data)
+            setUserLogged(loggedUser)
         } catch (error: any) {
-            console.log(error instanceof UserNotFoundError);
             if (error instanceof UserNotFoundError) {
                 setError("email", { type: "value", message: "" })
                 setError("password", { type: "value", message: "" })

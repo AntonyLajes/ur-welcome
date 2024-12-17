@@ -39,8 +39,7 @@ export default function SignUp({ onBack }: Props) {
     const onSignUp = async (data: SignUpSchema) => {
         try {
             setSignInIsLoading(true)
-            const createdUser = await userRepository.insert(data)
-            console.log(`onSignUp createdUser =>`, createdUser)
+            await userRepository.insert(data)
         } catch (error) {
             if (error instanceof FieldError) {
                 setError(error.field, { type: "value", message: error.message })

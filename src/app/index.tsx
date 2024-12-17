@@ -9,13 +9,14 @@ import CreatePost from "@/components/create-post";
 import { Icon } from "@/components/ui/icon";
 import { Pressable } from "@/components/ui/pressable";
 import { Drawer, DrawerBackdrop, DrawerBody, DrawerContent, DrawerHeader } from "@/components/ui/drawer";
-import { SignUpModel } from "@/components/sign-up";
 import SignUp from "@/components/sign-up";
 import SignIn from "@/components/sign-in";
 
 import { UserIcon } from "lucide-react-native"
 import { database } from "../data/local/database/config";
 import { User } from "../data/local/database/models/user-model";
+import { useUser } from "../stores/user";
+import Logged from "@/components/logged";
 
 type PostData = number | { key: string }
 
@@ -25,15 +26,7 @@ export default function Home() {
     const [showDrawer, setShowDrawer] = useState(false)
     const [isSignUp, setIsSignUp] = useState(false)
 
-    const onSignUp = async (data: SignUpModel) => {
-        await database.write(async () => {
-            await database.get<User>('users').create(user => {
-                user.name = data.name
-                user.email = data.email
-                user.password = data.password
-            })
-        })
-    }
+    const userLogged = useUser((state) => state.userLogged)
 
     useEffect(() => {
         const fetchData = async () => {
@@ -50,6 +43,7 @@ export default function Home() {
                     headerLeft: () => (
                         <Pressable
                             onPress={() => setShowDrawer(state => !state)}
+                            className="px-4"
                         >
                             <Icon as={UserIcon} />
                         </Pressable>
@@ -74,14 +68,15 @@ export default function Home() {
                     </DrawerHeader>
                     <DrawerBody>
                         {
-                            isSignUp ?
-                            <SignUp
-                                onBack={() => setIsSignUp(false)}
-                                onSignUp={onSignUp}
-                            /> :
-                            <SignIn
-                                onNavigateSignUp={() => setIsSignUp(true)}
-                            />
+                            !userLogged ?
+                                isSignUp ?
+                                    <SignUp
+                                        onBack={() => setIsSignUp(false)}
+                                    /> :
+                                    <SignIn
+                                        onNavigateSignUp={() => setIsSignUp(true)}
+                                    />
+                                : <Logged />
                         }
                     </DrawerBody>
                 </DrawerContent>
