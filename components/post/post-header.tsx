@@ -19,8 +19,7 @@ type Props = {
 }
 
 export default function PostHeader({ author, postDatetime }: Props) {
-
-    console.log(`author =>`, author);
+    
     const passedTime = () => {
         return dayjs(postDatetime).fromNow()
     }

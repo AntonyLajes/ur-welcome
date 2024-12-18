@@ -12,6 +12,7 @@ import TextareaInput from "./text-area-input";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Toast, ToastDescription, ToastTitle, useToast } from "./ui/toast";
 
 const createPostFormSchema = z.object({
     content: z.string({message: "Este campo é obrigatório!"}).min(1, { message: "Insira um texto válido." })
@@ -29,18 +30,45 @@ export default function CreatePost({ onConnect }: Props) {
         resolver: zodResolver(createPostFormSchema)
     })
 
-    const { handleSubmit } = createPostForm
+    const { handleSubmit, reset } = createPostForm
     const [showDialog, setShowDialog] = useState(false)
+    const toast = useToast()
 
     const postRepository = new PostRepository()
     const userLogged = useUser((state) => state.userLogged)
 
+    const showToast = () => {
+        const toastId = Math.random()
+        toast.show({
+            id: String(toastId),
+            placement: 'bottom',
+            duration: 1500,
+            render: ({id}) => {
+                const uniqueToastId = `toast-${id}`
+                return (
+                    <Toast
+                        nativeID={uniqueToastId}
+                    >
+                        <ToastDescription>Publicado com sucesso!</ToastDescription>
+                    </Toast>
+                )
+            }
+
+        })
+    }
+
     const createPost = async (data: CreatePostFormData) => {
-        if (!userLogged) {
-            setShowDialog(true)
-            return
+        try {
+            if (!userLogged) {
+                setShowDialog(true)
+                return
+            }
+            await postRepository.insert({ content: data.content, user: userLogged })
+            showToast()
+            reset()
+        } catch (error) {
+            
         }
-        await postRepository.insert({ content: data.content, user: userLogged })
     }
 
     return (
