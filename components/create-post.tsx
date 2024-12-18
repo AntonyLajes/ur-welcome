@@ -1,6 +1,5 @@
 import { Box } from "./ui/box";
 import { Button, ButtonText } from "./ui/button";
-import { Textarea, TextareaInput } from "./ui/textarea";
 import { VStack } from "./ui/vstack";
 import { useState } from "react";
 import { PostRepository } from "@/src/data/local/database/repository/post-repository";
@@ -9,6 +8,16 @@ import { Text } from "./ui/text";
 import { AlertDialog, AlertDialogBackdrop, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader } from "./ui/alert-dialog";
 import { Heading } from "./ui/heading";
 import { HStack } from "./ui/hstack";
+import TextareaInput from "./text-area-input";
+import { FormProvider, useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const createPostFormSchema = z.object({
+    content: z.string({message: "Este campo é obrigatório!"}).min(1, { message: "Insira um texto válido." })
+})
+
+type CreatePostFormData = z.infer<typeof createPostFormSchema>
 
 type Props = {
     onConnect: () => void
@@ -16,18 +25,22 @@ type Props = {
 
 export default function CreatePost({ onConnect }: Props) {
 
-    const [postContent, setPostContent] = useState('')
+    const createPostForm = useForm<CreatePostFormData>({
+        resolver: zodResolver(createPostFormSchema)
+    })
+
+    const { handleSubmit } = createPostForm
     const [showDialog, setShowDialog] = useState(false)
 
     const postRepository = new PostRepository()
     const userLogged = useUser((state) => state.userLogged)
 
-    const createPost = async () => {
+    const createPost = async (data: CreatePostFormData) => {
         if (!userLogged) {
             setShowDialog(true)
             return
         }
-        await postRepository.insert({ content: postContent, user: userLogged })
+        await postRepository.insert({ content: data.content, user: userLogged })
     }
 
     return (
@@ -37,25 +50,22 @@ export default function CreatePost({ onConnect }: Props) {
             <Box
                 className="gap-4 border rounded-3xl p-4"
             >
-                <Textarea
-                    className="rounded-3xl"
-                >
-                    <TextareaInput
-                        value={postContent}
-                        onChangeText={setPostContent}
-                        placeholder="O que está pensando?"
-                        multiline
-                    />
-                </Textarea>
+                <FormProvider {...createPostForm}>
+                <TextareaInput
+                    name="content"
+                    placeholder="O que está pensando?"
+                    multiline
+                />
                 <Button
                     variant="outline"
                     className="rounded-3xl"
-                    onPress={createPost}
+                    onPress={handleSubmit(createPost)}
                 >
                     <ButtonText>
                         Publicar
                     </ButtonText>
                 </Button>
+                </FormProvider>
             </Box>
             <AlertDialog
                 isOpen={showDialog}

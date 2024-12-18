@@ -1,3 +1,11 @@
+import dayjs from "dayjs"
+import relativeTime from "dayjs/plugin/relativeTime"
+import "dayjs/locale/pt-br"
+
+dayjs.extend(relativeTime)
+dayjs.locale('pt-br')
+
+import { User } from "@/src/data/local/database/models/user-model";
 import { Box } from "../ui/box";
 import { Heading } from "../ui/heading";
 import { HStack } from "../ui/hstack";
@@ -5,8 +13,18 @@ import { Image } from "../ui/image";
 import { Text } from "../ui/text";
 import { VStack } from "../ui/vstack";
 
-export default function PostHeader() {
+type Props = {
+    author: User | undefined,
+    postDatetime: Date
+}
 
+export default function PostHeader({ author, postDatetime }: Props) {
+
+    console.log(`author =>`, author);
+    const passedTime = () => {
+        return dayjs(postDatetime).fromNow()
+    }
+    
     return (
         <HStack
             className="items-center"
@@ -28,12 +46,12 @@ export default function PostHeader() {
                     className="text-typography-900"
                     size="sm"
                 >
-                    Marcos dos Santos
+                    {author ? author.name : "Lorem Ipsum"}
                 </Heading>
                 <Text
                     size="xs"
                 >
-                    9h
+                    {passedTime()}
                 </Text>
             </VStack>
         </HStack>

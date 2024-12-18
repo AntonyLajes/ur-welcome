@@ -30,7 +30,7 @@ export default function SignUp({ onBack }: Props) {
     const signUpForm = useForm<SignUpSchema>({
         resolver: zodResolver(signUpSchema)
     })
-    const { handleSubmit, setError } = signUpForm
+    const { handleSubmit, setError, reset } = signUpForm
 
     const [signInIsLoading, setSignInIsLoading] = useState(false)
 
@@ -40,6 +40,7 @@ export default function SignUp({ onBack }: Props) {
         try {
             setSignInIsLoading(true)
             await userRepository.insert(data)
+            reset()
         } catch (error) {
             if (error instanceof FieldError) {
                 setError(error.field, { type: "value", message: error.message })
@@ -57,6 +58,7 @@ export default function SignUp({ onBack }: Props) {
                 <Input
                     name="name"
                     placeholder="nome"
+                    autoCapitalize="words"
                 />
                 <Input
                     name="email"

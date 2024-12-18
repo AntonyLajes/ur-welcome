@@ -50,6 +50,15 @@ export class UserRepository implements UserRepositoryUseCase {
         }
     }
 
+    async selectById(id: string): Promise<User | void> {
+        try {
+            const storedUser = await userDatabase.find(id)
+            return storedUser
+        } catch (error: any) {
+            throw new Error(error)
+        }
+    }
+
     async login(user: SignInDTO): Promise<User> {
         try {
             const storedUser = await this.selectByEmail(user.email)

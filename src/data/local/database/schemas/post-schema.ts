@@ -9,7 +9,8 @@ export const postSchema = tableSchema({
         },
         {
             name: 'created_at',
-            type: 'number'
+            type: 'number',
+            isIndexed: true
         },
         {
             name: 'author_id',

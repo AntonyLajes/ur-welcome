@@ -1,3 +1,4 @@
+import { Q } from "@nozbe/watermelondb";
 import { database, postDatabase } from "../config";
 import { Post } from "../models/post-model";
 import { PostDTO } from "./dto/PostDTO";
@@ -21,7 +22,7 @@ export class PostRepository implements PostRepositoryUseCase{
 
     async selectAll(): Promise<Post[]> {
         try {
-            const posts = await postDatabase.query().fetch()
+            const posts = await postDatabase.query(Q.sortBy('created_at', 'asc')).fetch()
             return posts
         } catch (error) {
             throw error

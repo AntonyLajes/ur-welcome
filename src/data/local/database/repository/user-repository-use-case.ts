@@ -7,6 +7,7 @@ export interface UserRepositoryUseCase {
     insert(user: SignUpDTO): Promise<string | void>
     selectAll(): Promise<User[] | void>
     selectByEmail(email: string): Promise<User | void>
+    selectById(id: string): Promise<User | void>
     login(user: SignInDTO): Promise<User | void>
 
 }
