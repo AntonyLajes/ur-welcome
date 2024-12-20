@@ -5,29 +5,14 @@ import PostBody from "./post-body";
 import PostFooter from "./post-footer";
 import PostHeader from "./post-header";
 import { withObservables } from "@nozbe/watermelondb/react";
-import { userDatabase } from "@/src/data/local/database/config";
-import { useEffect, useState } from "react";
 import { User } from "@/src/data/local/database/models/user-model";
-import { UserRepository } from "@/src/data/local/database/repository/user-repository";
 
 type Props = {
-    post: PostModel
+    post: PostModel,
+    author: User
 }
 
-export default function Post({ post }: Props) {
-
-    const [author, setAuthor] = useState<User | undefined>(undefined)
-    const userRepository = new UserRepository()
-
-    const fetchAuthor = async () => {
-        const fetchedAuthor = await userRepository.selectById(post.authorId)
-        if(!fetchedAuthor) return
-        setAuthor(fetchedAuthor)
-    }
-
-    useEffect(() => {
-        fetchAuthor()
-    }, [])
+function Post({ post, author }: Props) {
 
     return (
         <VStack
@@ -36,8 +21,15 @@ export default function Post({ post }: Props) {
         >
             <PostHeader author={author} postDatetime={post.createdAt}/>
             <PostBody content={post.content}/>
-            <PostFooter/>
+            <PostFooter postId={post.id}/>
         </VStack>
     )
 
 }
+
+const enhance = withObservables(['post'], ({post}: { post: PostModel}) => ({
+    post,
+    author: post.author
+}))
+
+export default enhance(Post)

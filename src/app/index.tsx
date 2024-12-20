@@ -8,7 +8,6 @@ import SignUp from "@/components/sign-up";
 import SignIn from "@/components/sign-in";
 
 import { UserIcon } from "lucide-react-native"
-import { postDatabase, userDatabase } from "../data/local/database/config";
 import { useUser } from "../stores/user";
 import Logged from "@/components/logged";
 import HomeContent from "@/components/home-content";
@@ -16,21 +15,10 @@ import HomeContent from "@/components/home-content";
 
 export default function Home() {
     
-
     const [showDrawer, setShowDrawer] = useState(false)
     const [isSignUp, setIsSignUp] = useState(false)
 
     const userLogged = useUser((state) => state.userLogged)
-
-    useEffect(() => {
-        const fetchData = async () => {
-            const userData = await userDatabase.query().fetch()
-            const postData = await postDatabase.query().fetch()
-            console.log(`userData =>`, userData)
-            console.log(`postData =>`, postData)
-        }
-        fetchData()
-    }, [])
 
     return (
         <>

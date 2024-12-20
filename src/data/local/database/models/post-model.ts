@@ -1,10 +1,15 @@
 import { Model } from "@nozbe/watermelondb";
-import { date, immutableRelation, relation, text } from "@nozbe/watermelondb/decorators";
+import { children, date, immutableRelation, relation, text } from "@nozbe/watermelondb/decorators";
 import { User } from "./user-model";
+import { Like } from "./like-model";
+import { Associations } from "@nozbe/watermelondb/Model";
 
 export class Post extends Model {
 
     static table = 'posts'
+    static associations: Associations = {
+        likes: { type: 'has_many', foreignKey: 'id' }
+    }
 
     @text('content')
     content!: string
@@ -17,5 +22,7 @@ export class Post extends Model {
 
     @relation('users', 'author_id') // Definindo a relação de "pertence a"
     author!: User
+
+    @children('likes') likes!: Like
 
 }
