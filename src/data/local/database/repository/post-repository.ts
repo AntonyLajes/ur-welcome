@@ -22,7 +22,7 @@ export class PostRepository implements PostRepositoryUseCase{
 
     async selectAll(): Promise<Post[]> {
         try {
-            const posts = await postDatabase.query(Q.sortBy('created_at', 'asc')).fetch()
+            const posts = await postDatabase.query(Q.sortBy('created_at', Q.desc)).fetch()
             return posts
         } catch (error) {
             throw error

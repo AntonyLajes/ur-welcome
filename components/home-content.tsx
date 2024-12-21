@@ -7,6 +7,7 @@ import React from "react"
 
 import { withObservables } from "@nozbe/watermelondb/react"
 import { postDatabase } from "@/src/data/local/database/config"
+import { Q } from "@nozbe/watermelondb"
 
 type PostData = PostModel | { key: string }
 
@@ -26,6 +27,7 @@ function HomeContent({ posts, setShowDrawer }: PostsListItemProps) {
     return (
         <FlatList
             data={postsWithHeader}
+            keyExtractor={(item) => ('id' in item ? item.id : item.key)}
             renderItem={({ item }) => {
                 if (typeof item === "object" && 'key' in item) {
                     return <CreatePost onConnect={() => setShowDrawer(true)} />
@@ -39,7 +41,7 @@ function HomeContent({ posts, setShowDrawer }: PostsListItemProps) {
 }
 
 const enhance = withObservables([], () => ({
-    posts: postDatabase.query()
+    posts: postDatabase.query(Q.sortBy('created_at', Q.desc))
 }))
 
 const EnhancedHomeContent: React.FC<HomeContentProps> = enhance(HomeContent)
