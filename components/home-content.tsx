@@ -12,15 +12,10 @@ import { Q } from "@nozbe/watermelondb"
 type PostData = PostModel | { key: string }
 
 type PostsListItemProps = {
-    posts: PostModel[],
-    setShowDrawer: React.Dispatch<React.SetStateAction<boolean>>
+    posts: PostModel[]
 }
 
-type HomeContentProps = {
-    setShowDrawer: React.Dispatch<React.SetStateAction<boolean>>
-}
-
-function HomeContent({ posts, setShowDrawer }: PostsListItemProps) {
+function HomeContent({ posts }: PostsListItemProps) {
 
     const postsWithHeader: PostData[] = [{key: 'createPost'} ,...posts]
 
@@ -30,7 +25,7 @@ function HomeContent({ posts, setShowDrawer }: PostsListItemProps) {
             keyExtractor={(item) => ('id' in item ? item.id : item.key)}
             renderItem={({ item }) => {
                 if (typeof item === "object" && 'key' in item) {
-                    return <CreatePost onConnect={() => setShowDrawer(true)} />
+                    return <CreatePost />
                 } else {
                     return <Post post={item} />
                 }
@@ -44,6 +39,6 @@ const enhance = withObservables([], () => ({
     posts: postDatabase.query(Q.sortBy('created_at', Q.desc))
 }))
 
-const EnhancedHomeContent: React.FC<HomeContentProps> = enhance(HomeContent)
+const EnhancedHomeContent: React.FC = enhance(HomeContent)
 
 export default EnhancedHomeContent

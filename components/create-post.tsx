@@ -13,6 +13,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Toast, ToastDescription, ToastTitle, useToast } from "./ui/toast";
+import { useDialog } from "@/src/stores/dialog";
 
 const createPostFormSchema = z.object({
     content: z.string({message: "Este campo é obrigatório!"}).min(1, { message: "Insira um texto válido." })
@@ -20,22 +21,18 @@ const createPostFormSchema = z.object({
 
 type CreatePostFormData = z.infer<typeof createPostFormSchema>
 
-type Props = {
-    onConnect: () => void
-}
-
-export default function CreatePost({ onConnect }: Props) {
+export default function CreatePost() {
 
     const createPostForm = useForm<CreatePostFormData>({
         resolver: zodResolver(createPostFormSchema)
     })
 
     const { handleSubmit, reset } = createPostForm
-    const [showDialog, setShowDialog] = useState(false)
     const toast = useToast()
 
     const postRepository = new PostRepository()
     const userLogged = useUser((state) => state.userLogged)
+    const setShowDialog = useDialog(state => state.setShowDialog)
 
     const showToast = () => {
         const toastId = Math.random()
@@ -95,54 +92,6 @@ export default function CreatePost({ onConnect }: Props) {
                 </Button>
                 </FormProvider>
             </Box>
-            <AlertDialog
-                isOpen={showDialog}
-                onClose={() => setShowDialog(false)}
-            >
-                <AlertDialogBackdrop />
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <Heading
-                            size="sm"
-                        >
-                            Você não está conectado!
-                        </Heading>
-                    </AlertDialogHeader>
-                    <AlertDialogBody
-                        className="mt-2"
-                    >
-                        <Text>
-                            Conecte-se para publicar, curtir e comentar.
-                        </Text>
-                    </AlertDialogBody>
-                    <AlertDialogFooter
-                        className="mt-4"
-                    >
-                        <HStack
-                            className="w-full justify-between"
-                        >
-                            <Button
-                                variant="outline"
-                                onPress={() => setShowDialog(false)}
-                            >
-                                <ButtonText>
-                                    Cancelar
-                                </ButtonText>
-                            </Button>
-                            <Button
-                                onPress={() => {
-                                    setShowDialog(false)
-                                    onConnect()
-                                }}
-                            >
-                                <ButtonText>
-                                    Conectar
-                                </ButtonText>
-                            </Button>
-                        </HStack>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
         </VStack>
     )
 

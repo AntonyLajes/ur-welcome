@@ -11,6 +11,7 @@ import { UserIcon } from "lucide-react-native"
 import { useUser } from "../stores/user";
 import Logged from "@/components/logged";
 import HomeContent from "@/components/home-content";
+import UnauthenticatedDialog from "@/components/unauthenticated-dialog";
 
 
 export default function Home() {
@@ -65,7 +66,8 @@ export default function Home() {
                     </DrawerBody>
                 </DrawerContent>
             </Drawer>
-            <HomeContent setShowDrawer={setShowDrawer} />
+            <HomeContent />
+            <UnauthenticatedDialog onConnect={() => setShowDrawer(true)}/>
         </>
     )
 
