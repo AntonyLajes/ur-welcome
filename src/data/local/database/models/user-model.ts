@@ -1,10 +1,18 @@
 import { Model } from "@nozbe/watermelondb";
-import { relation, text } from "@nozbe/watermelondb/decorators";
+import { children, relation, text } from "@nozbe/watermelondb/decorators";
 import { Post } from "./post-model";
+import { Associations } from "@nozbe/watermelondb/Model";
+import { Like } from "./like-model";
+import { Comment } from "./comment-model";
 
 export class User extends Model {
 
     static table = 'users'
+    static associations: Associations = {
+        posts: { type: 'has_many', foreignKey: 'author_id' },
+        likes: { type: 'has_many', foreignKey: 'user_id' },
+        comments: { type: 'has_many', foreignKey: 'author_id' }
+    }
 
     @text('name')
     name!: string
@@ -14,8 +22,13 @@ export class User extends Model {
 
     @text('password')
     password!: string
-    
-    @relation('posts', 'author_id') // Relação com posts (Um usuário pode ter muitos Posts)
+
+    @children('posts')
     posts!: Post[]
 
+    @children('likes')
+    likes!: Like[]
+    
+    @children('comments')
+    comments!: Comment[]
 } 

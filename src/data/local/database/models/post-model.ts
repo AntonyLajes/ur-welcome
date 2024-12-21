@@ -3,12 +3,15 @@ import { children, date, immutableRelation, relation, text } from "@nozbe/waterm
 import { User } from "./user-model";
 import { Like } from "./like-model";
 import { Associations } from "@nozbe/watermelondb/Model";
+import { Comment } from "./comment-model";
 
 export class Post extends Model {
 
     static table = 'posts'
     static associations: Associations = {
-        likes: { type: 'has_many', foreignKey: 'id' }
+        likes: { type: 'has_many', foreignKey: 'post_id' },
+        comments: { type: 'has_many', foreignKey: 'post_id'},
+        users: { type: 'belongs_to', key: 'author_id'  }
     }
 
     @text('content')
@@ -23,6 +26,7 @@ export class Post extends Model {
     @relation('users', 'author_id') // Definindo a relação de "pertence a"
     author!: User
 
-    @children('likes') likes!: Like
+    @children('likes') likes!: Like[]
+    @children('comments') comments!: Comment[]
 
 }
