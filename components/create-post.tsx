@@ -34,7 +34,7 @@ export default function CreatePost() {
     const userLogged = useUser((state) => state.userLogged)
     const setShowDialog = useDialog(state => state.setShowDialog)
 
-    const showToast = () => {
+    const showToast = (message: string = "Publicado com sucesso!") => {
         const toastId = Math.random()
         toast.show({
             id: String(toastId),
@@ -46,7 +46,7 @@ export default function CreatePost() {
                     <Toast
                         nativeID={uniqueToastId}
                     >
-                        <ToastDescription>Publicado com sucesso!</ToastDescription>
+                        <ToastDescription>{message}</ToastDescription>
                     </Toast>
                 )
             }
@@ -64,7 +64,7 @@ export default function CreatePost() {
             showToast()
             reset()
         } catch (error) {
-            
+            showToast(`Ocorreu um erro ao publicar.`)
         }
     }
 

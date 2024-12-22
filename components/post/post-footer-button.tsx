@@ -14,6 +14,7 @@ import { withObservables } from "@nozbe/watermelondb/react";
 import { database, likeDatabase } from "@/src/data/local/database/config";
 import { User } from "@/src/data/local/database/models/user-model";
 import { Q } from "@nozbe/watermelondb";
+import { useDialog } from "@/src/stores/dialog";
 
 type PostFooterButtonItemProps = {
     mode: "Curtir" | "Comentar",
@@ -33,13 +34,18 @@ type PostFooterButtonProps = {
 
 function PostFooterButton({ mode, icon, postId, userLogged, likeCount, liked }: PostFooterButtonItemProps) {
 
+    const setShowDialog = useDialog(state => state.setShowDialog)
+
     const isLiked = !!liked[0]
     const dynamicColor = isLiked && mode === "Curtir" ? "color-blue-500" : "color-typography-700"
 
     const likeRepository = new LikeRepository()
     
     const handleLike = async () => {
-        if(!userLogged) return
+        if(!userLogged) {
+            setShowDialog(true)
+            return
+        }
 
         if(isLiked){
             await likeRepository.remove(userLogged?.id, postId)
