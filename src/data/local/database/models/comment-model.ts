@@ -1,4 +1,4 @@
-import { immutableRelation, text } from "@nozbe/watermelondb/decorators";
+import { date, immutableRelation, text } from "@nozbe/watermelondb/decorators";
 import { Model } from "@nozbe/watermelondb";
 
 import { Post } from "./post-model";
@@ -19,6 +19,8 @@ export class Comment extends Model{
     postId!: string
     @text('author_id')
     authorId!: string
+    @date('created_at')
+    createdAt!: Date
 
     @immutableRelation('posts', 'post_id')
     post!: Post

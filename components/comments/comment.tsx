@@ -1,4 +1,6 @@
-import { Box } from "../ui/box";
+import { Comment as CommentModel } from "@/src/data/local/database/models/comment-model";
+
+
 import { HStack } from "../ui/hstack";
 import { Icon } from "../ui/icon";
 import { Image } from "../ui/image";
@@ -7,9 +9,17 @@ import { Text } from "../ui/text";
 import { VStack } from "../ui/vstack";
 
 import { ThumbsUp } from "lucide-react-native"
+import { withObservables } from "@nozbe/watermelondb/react";
+import { User } from "@/src/data/local/database/models/user-model";
+import dayjs from "dayjs";
+import { passedTime } from "@/src/utils/passedTime";
 
-export default function Comment() {
+type CommentProps = {
+    comment: CommentModel,
+    author: User
+}
 
+function Comment({ comment, author }: CommentProps) {
     return (
         <VStack
             className="p-4"
@@ -36,10 +46,10 @@ export default function Comment() {
                             className="text-typography-950"
                             bold
                         >
-                            Lorem Ipsum da Silva
+                            {author.name}
                         </Text>
                         <Text>
-                            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quaerat sint mollitia consequuntur voluptatibus! Modi voluptas qui minus quam inventore labore quia veritatis iste, beatae tempora, porro neque, minima deserunt odit.
+                            {comment.content}
                         </Text>
                     </VStack>
                     <HStack
@@ -50,18 +60,18 @@ export default function Comment() {
                             space="sm"
                         >
                             <Text>
-                                3h
+                                {passedTime(comment.createdAt)}
                             </Text>
                             <Pressable>
                                 <Text>
                                     Curtir
                                 </Text>
                             </Pressable>
-                            <Pressable>
+                            {/* <Pressable>
                                 <Text>
                                     Responder
                                 </Text>
-                            </Pressable>
+                            </Pressable> */}
                         </HStack>
                         <HStack
                             className="items-center"
@@ -81,3 +91,10 @@ export default function Comment() {
     )
 
 }
+
+const enhance = withObservables(['comment'], ({comment}: {comment: CommentModel}) => ({
+    comment,
+    author: comment.author
+}))
+
+export default enhance(Comment)

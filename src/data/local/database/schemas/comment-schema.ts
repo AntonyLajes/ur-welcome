@@ -15,6 +15,11 @@ export const commentSchema = tableSchema({
         {
             name: 'content',
             type: 'string'
+        },
+        {
+            name: 'created_at',
+            type: 'number',
+            isIndexed: true
         }
     ]
 })

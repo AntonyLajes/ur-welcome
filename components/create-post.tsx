@@ -14,6 +14,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Toast, ToastDescription, ToastTitle, useToast } from "./ui/toast";
 import { useDialog } from "@/src/stores/dialog";
+import { showToast } from "./toast";
 
 const createPostFormSchema = z.object({
     content: z.string({message: "Este campo é obrigatório!"}).min(1, { message: "Insira um texto válido." })
@@ -34,26 +35,6 @@ export default function CreatePost() {
     const userLogged = useUser((state) => state.userLogged)
     const setShowDialog = useDialog(state => state.setShowDialog)
 
-    const showToast = (message: string = "Publicado com sucesso!") => {
-        const toastId = Math.random()
-        toast.show({
-            id: String(toastId),
-            placement: 'bottom',
-            duration: 1500,
-            render: ({id}) => {
-                const uniqueToastId = `toast-${id}`
-                return (
-                    <Toast
-                        nativeID={uniqueToastId}
-                    >
-                        <ToastDescription>{message}</ToastDescription>
-                    </Toast>
-                )
-            }
-
-        })
-    }
-
     const createPost = async (data: CreatePostFormData) => {
         try {
             if (!userLogged) {
@@ -61,10 +42,10 @@ export default function CreatePost() {
                 return
             }
             await postRepository.insert({ content: data.content, user: userLogged })
-            showToast()
+            showToast(toast)
             reset()
         } catch (error) {
-            showToast(`Ocorreu um erro ao publicar.`)
+            showToast(toast, `Ocorreu um erro ao publicar.`)
         }
     }
 

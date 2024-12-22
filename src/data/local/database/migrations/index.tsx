@@ -1,7 +1,21 @@
-import { createTable, schemaMigrations } from "@nozbe/watermelondb/Schema/migrations";
+import { addColumns, createTable, schemaMigrations } from "@nozbe/watermelondb/Schema/migrations";
 
 export default schemaMigrations({
     migrations: [
+        {
+            toVersion: 4,
+            steps: [
+                addColumns({
+                    table: 'comments',
+                    columns: [
+                        {
+                            name: 'created_at',
+                            type: 'number'
+                        }
+                    ]
+                })
+            ]
+        },
         {
             toVersion: 3,
             steps: [

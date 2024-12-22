@@ -1,17 +1,12 @@
-import dayjs from "dayjs"
-import relativeTime from "dayjs/plugin/relativeTime"
-import "dayjs/locale/pt-br"
-
-dayjs.extend(relativeTime)
-dayjs.locale('pt-br')
-
 import { User } from "@/src/data/local/database/models/user-model";
+
 import { Box } from "../ui/box";
 import { Heading } from "../ui/heading";
 import { HStack } from "../ui/hstack";
 import { Image } from "../ui/image";
 import { Text } from "../ui/text";
 import { VStack } from "../ui/vstack";
+import { passedTime } from "@/src/utils/passedTime";
 
 type Props = {
     author: User | undefined,
@@ -19,10 +14,6 @@ type Props = {
 }
 
 export default function PostHeader({ author, postDatetime }: Props) {
-    
-    const passedTime = () => {
-        return dayjs(postDatetime).fromNow()
-    }
     
     return (
         <HStack
@@ -50,7 +41,7 @@ export default function PostHeader({ author, postDatetime }: Props) {
                 <Text
                     size="xs"
                 >
-                    {passedTime()}
+                    {passedTime(postDatetime)}
                 </Text>
             </VStack>
         </HStack>

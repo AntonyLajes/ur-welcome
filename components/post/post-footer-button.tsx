@@ -55,7 +55,12 @@ function PostFooterButton({ mode, icon, postId, userLogged, likeCount, liked }: 
     }
 
     const onComment = () => {
-        router.navigate("/comments")
+        router.navigate({
+            pathname: "/comments",
+            params: {
+                postId
+            }
+        })
     }
 
     return (
