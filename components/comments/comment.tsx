@@ -1,11 +1,15 @@
 import { withObservables } from "@nozbe/watermelondb/react";
+import { Q } from "@nozbe/watermelondb";
 
 import { Comment as CommentModel } from "@/src/data/local/database/models/comment-model";
 import { User } from "@/src/data/local/database/models/user-model";
 import { LikeComment } from "@/src/data/local/database/models/like-comment";
 
+import { likeCommentDatabase } from "@/src/data/local/database/config";
+
 import { LikeCommentRepository } from "@/src/data/local/database/repository/like-comment-repository";
 
+import { useDialog } from "@/src/stores/dialog";
 import { passedTime } from "@/src/utils/passedTime";
 
 import { HStack } from "../ui/hstack";
@@ -16,11 +20,6 @@ import { Text } from "../ui/text";
 import { VStack } from "../ui/vstack";
 
 import { ThumbsUp } from "lucide-react-native"
-import { useUser } from "@/src/stores/user";
-import { useDialog } from "@/src/stores/dialog";
-import { likeCommentDatabase, likeDatabase } from "@/src/data/local/database/config";
-import { Q } from "@nozbe/watermelondb";
-import { useState } from "react";
 
 type CommentObservableProps = {
     comment: CommentModel,

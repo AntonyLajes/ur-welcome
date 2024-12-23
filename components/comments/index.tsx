@@ -3,10 +3,10 @@ import { withObservables } from "@nozbe/watermelondb/react";
 import { commentDatabase } from "@/src/data/local/database/config";
 import { Comment as CommentModel } from "@/src/data/local/database/models/comment-model";
 
-import { FlatList } from "react-native";
-import Comment from "./comment";
 import { useUser } from "@/src/stores/user";
 
+import { FlatList } from "react-native";
+import Comment from "./comment";
 
 type CommentsObservable = {
     comments: CommentModel[],
