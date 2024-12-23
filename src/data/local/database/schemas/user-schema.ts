@@ -15,5 +15,10 @@ export const userSchema = tableSchema({
             name: 'password',
             type: 'string'
         },
+        {
+            name: 'pic',
+            type: 'string',
+            isOptional: true
+        },
     ]
 })

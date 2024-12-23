@@ -25,6 +25,9 @@ export class User extends Model {
     @text('password')
     password!: string
 
+    @text('pic')
+    picUri: string | undefined
+
     @children('posts')
     posts!: Post[]
 

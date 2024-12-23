@@ -4,13 +4,39 @@ import { Button, ButtonText } from "./ui/button";
 import { Heading } from "./ui/heading";
 import { Image } from "./ui/image";
 import { VStack } from "./ui/vstack";
+import { useState } from "react";
+import { Pressable } from "./ui/pressable";
+import { Icon } from "./ui/icon";
+import { CircleUser, UserPenIcon } from "lucide-react-native";
+import { Box } from "./ui/box";
+import { getGalleryImage } from "@/src/utils/get-gallery-image";
+import { UserRepository } from "@/src/data/local/database/repository/user-repository";
 
 export default function Logged() {
 
     const { userLogged, setUserLogged } = useUser()
+    const [image, setImage] = useState<string | undefined>(undefined)
+    const userRepository = new UserRepository()
 
     const onLogout = () => {
         setUserLogged(undefined)
+    }
+
+    const updatePicProfile = async () => {
+        try {
+            const result = await getGalleryImage()
+            console.log(`result =>`, result)
+            console.log(`userLogged =>`, userLogged)
+            
+            if(!result || !userLogged) return
+            await userRepository.updatePicProfile(userLogged, result.uri)
+            const updatedUser = await userRepository.selectById(userLogged.id)
+            console.log(`updatedUser =>`, updatedUser)
+            if(!updatedUser) return
+            setUserLogged(updatedUser)
+        } catch (error) {
+            
+        }
     }
 
     return (
@@ -18,14 +44,26 @@ export default function Logged() {
             className="items-center"
             space="xl"
         >
-            <Avatar>
-                <AvatarFallbackText>{userLogged?.name}</AvatarFallbackText>
-                <AvatarImage
-                    source={{
-                        uri: "https://media.hswstatic.com/eyJidWNrZXQiOiJjb250ZW50Lmhzd3N0YXRpYy5jb20iLCJrZXkiOiJnaWZcL3BsYXlcLzBiN2Y0ZTliLWY1OWMtNDAyNC05ZjA2LWIzZGMxMjg1MGFiNy0xOTIwLTEwODAuanBnIiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjo4Mjh9fX0="
-                    }}
-                />
-            </Avatar>
+            <Pressable
+                onPress={updatePicProfile}
+            >
+                {userLogged?.picUri ? (
+                    <Avatar>
+                        <AvatarFallbackText>{userLogged?.name}</AvatarFallbackText>
+                        <AvatarImage
+                            source={{
+                                uri: `${userLogged.picUri}`
+                            }}
+                        />
+                    </Avatar>
+                ) :
+                    <Box
+                        className="border-2 rounded-full w-16 h-16 justify-center items-center"
+                    >
+                        <Icon as={UserPenIcon} className=" p-4" />
+                    </Box>
+                }
+            </Pressable>
             <VStack
                 space="sm"
             >

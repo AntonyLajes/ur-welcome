@@ -6,6 +6,6 @@ import { commentSchema } from "./comment-schema";
 import { likeCommentSchema } from "./like-comment";
 
 export const schemas = appSchema({
-    version: 6,
+    version: 7,
     tables: [userSchema, postSchema, likeSchema, commentSchema, likeCommentSchema]
 })

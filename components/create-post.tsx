@@ -83,10 +83,6 @@ export default function CreatePost() {
         }
     }
 
-    useEffect(() => {
-        console.log(`image =>`, image)
-    }, [image])
-
     return (
         <VStack
             className="p-8 bg-white"

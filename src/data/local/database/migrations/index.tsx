@@ -3,6 +3,23 @@ import { addColumns, createTable, schemaMigrations } from "@nozbe/watermelondb/S
 export default schemaMigrations({
     migrations: [
         {
+            toVersion: 7,
+            steps: [
+                addColumns(
+                    {
+                        table: 'users',
+                        columns: [
+                            {
+                                name: 'pic',
+                                type: "string",
+                                isOptional: true
+                            }
+                        ]
+                    }
+                )
+            ]
+        },
+        {
             toVersion: 6,
             steps: [
                 addColumns(
@@ -80,20 +97,22 @@ export default schemaMigrations({
         {
             toVersion: 2,
             steps: [
-                createTable({
-                    name: 'likes',
-                    columns: [
-                        {
-                            name: 'post_id',
-                            type: 'string',
-                            isIndexed: true
-                        },
-                        {
-                            name: 'user_id',
-                            type: 'string'
-                        }
-                    ]
-                })
+                createTable(
+                    {
+                        name: 'likes',
+                        columns: [
+                            {
+                                name: 'post_id',
+                                type: 'string',
+                                isIndexed: true
+                            },
+                            {
+                                name: 'user_id',
+                                type: 'string'
+                            }
+                        ]
+                    }
+                )
             ]
         }
     ]

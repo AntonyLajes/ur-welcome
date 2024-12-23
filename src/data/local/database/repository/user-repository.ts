@@ -32,6 +32,18 @@ export class UserRepository implements UserRepositoryUseCase {
         }
     }
 
+    async updatePicProfile(user: User, picUri: string): Promise<void | User> {
+        try {
+            await database.write(async () => {
+                await user.update(_ => {
+                    _.picUri = picUri
+                })
+            })
+        } catch (error) {
+            throw error
+        }
+    }
+
     async selectAll(): Promise<User[] | void> {
         try {
             const users = await userDatabase.query().fetch()
