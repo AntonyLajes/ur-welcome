@@ -3,6 +3,27 @@ import { addColumns, createTable, schemaMigrations } from "@nozbe/watermelondb/S
 export default schemaMigrations({
     migrations: [
         {
+            toVersion: 5,
+            steps: [
+                createTable(
+                    {
+                        name: 'comment_likes',
+                        columns: [
+                            {
+                                name: 'comment_id',
+                                type: 'string',
+                                isIndexed: true
+                            },
+                            {
+                                name: 'user_id',
+                                type: 'string'
+                            }
+                        ]
+                    }
+                )
+            ]
+        },
+        {
             toVersion: 4,
             steps: [
                 addColumns({

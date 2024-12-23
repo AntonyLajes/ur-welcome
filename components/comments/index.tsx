@@ -5,6 +5,7 @@ import { Comment as CommentModel } from "@/src/data/local/database/models/commen
 
 import { FlatList } from "react-native";
 import Comment from "./comment";
+import { useUser } from "@/src/stores/user";
 
 
 type CommentsObservable = {
@@ -18,14 +19,13 @@ type FlatListCommentsProps = {
 
 function FlatListComments({ comments, postId }: CommentsObservable) {
 
-    console.log(`comments =>`, comments);
-    console.log(`postId =>`, postId);
+    const userLogged = useUser(state => state.userLogged)
 
     return (
         <FlatList
             data={comments}
             keyExtractor={(item) => item.id}
-            renderItem={({item}) => <Comment comment={item} key={item.id}/>}
+            renderItem={({item}) => <Comment key={item.id} comment={item} userLogged={userLogged}/>}
         />
     )
 

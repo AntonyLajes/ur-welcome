@@ -1,5 +1,12 @@
-import { Comment as CommentModel } from "@/src/data/local/database/models/comment-model";
+import { withObservables } from "@nozbe/watermelondb/react";
 
+import { Comment as CommentModel } from "@/src/data/local/database/models/comment-model";
+import { User } from "@/src/data/local/database/models/user-model";
+import { LikeComment } from "@/src/data/local/database/models/like-comment";
+
+import { LikeCommentRepository } from "@/src/data/local/database/repository/like-comment-repository";
+
+import { passedTime } from "@/src/utils/passedTime";
 
 import { HStack } from "../ui/hstack";
 import { Icon } from "../ui/icon";
@@ -9,17 +16,54 @@ import { Text } from "../ui/text";
 import { VStack } from "../ui/vstack";
 
 import { ThumbsUp } from "lucide-react-native"
-import { withObservables } from "@nozbe/watermelondb/react";
-import { User } from "@/src/data/local/database/models/user-model";
-import dayjs from "dayjs";
-import { passedTime } from "@/src/utils/passedTime";
+import { useUser } from "@/src/stores/user";
+import { useDialog } from "@/src/stores/dialog";
+import { likeCommentDatabase, likeDatabase } from "@/src/data/local/database/config";
+import { Q } from "@nozbe/watermelondb";
+import { useState } from "react";
+
+type CommentObservableProps = {
+    comment: CommentModel,
+    author: User,
+    liked: LikeComment[],
+    likeCount: number,
+    userLogged: User
+}
 
 type CommentProps = {
     comment: CommentModel,
-    author: User
+    userLogged: User | undefined
 }
 
-function Comment({ comment, author }: CommentProps) {
+function Comment({ comment, author, liked, likeCount, userLogged }: CommentObservableProps) {
+
+    const isLiked = !!liked[0]
+    const setShowDialog = useDialog(state => state.setShowDialog)
+    
+    const likeCommentRepository = new LikeCommentRepository()
+
+    const likeComment = async () => {
+        try {
+            if(!userLogged) {
+                setShowDialog(true)
+                return
+            }
+            if(isLiked){
+                await likeCommentRepository.remove({
+                    userId: userLogged?.id,
+                    commentId: comment.id
+                })
+            }else{
+                await likeCommentRepository.insert({
+                    userId: userLogged?.id,
+                    commentId: comment.id
+                })
+            }
+        } catch (error) {
+            
+        }
+    } 
+
     return (
         <VStack
             className="p-4"
@@ -62,9 +106,13 @@ function Comment({ comment, author }: CommentProps) {
                             <Text>
                                 {passedTime(comment.createdAt)}
                             </Text>
-                            <Pressable>
-                                <Text>
-                                    Curtir
+                            <Pressable
+                                onPress={likeComment}
+                            >
+                                <Text
+                                    bold={isLiked}
+                                >
+                                    {isLiked ? 'Curtiu' : 'Curtir'}
                                 </Text>
                             </Pressable>
                             {/* <Pressable>
@@ -78,7 +126,7 @@ function Comment({ comment, author }: CommentProps) {
                             space="sm"
                         >
                             <Text>
-                                21
+                                {likeCount}
                             </Text>
                             <Icon
                                 as={ThumbsUp}
@@ -92,9 +140,13 @@ function Comment({ comment, author }: CommentProps) {
 
 }
 
-const enhance = withObservables(['comment'], ({comment}: {comment: CommentModel}) => ({
+const enhance = withObservables(['comment', 'userLogged'], ({comment, userLogged}: {comment: CommentModel, userLogged: User | undefined}) => ({
     comment,
-    author: comment.author
+    author: comment.author,
+    liked: likeCommentDatabase.query(Q.where('user_id', userLogged?.id ?? ''), Q.where('comment_id', comment.id)),
+    likeCount: likeCommentDatabase.query(Q.where('comment_id', comment.id)).observeCount()
 }))
 
-export default enhance(Comment)
+const EnhancedComment: React.FC<CommentProps> = enhance(Comment)
+
+export default EnhancedComment

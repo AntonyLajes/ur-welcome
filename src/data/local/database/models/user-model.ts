@@ -4,6 +4,7 @@ import { Post } from "./post-model";
 import { Associations } from "@nozbe/watermelondb/Model";
 import { Like } from "./like-model";
 import { Comment } from "./comment-model";
+import { LikeComment } from "./like-comment";
 
 export class User extends Model {
 
@@ -11,7 +12,8 @@ export class User extends Model {
     static associations: Associations = {
         posts: { type: 'has_many', foreignKey: 'author_id' },
         likes: { type: 'has_many', foreignKey: 'user_id' },
-        comments: { type: 'has_many', foreignKey: 'author_id' }
+        comments: { type: 'has_many', foreignKey: 'author_id' },
+        like_comment: { type: 'has_many', foreignKey: 'user_id' }
     }
 
     @text('name')
@@ -31,4 +33,7 @@ export class User extends Model {
     
     @children('comments')
     comments!: Comment[]
+
+    @children('like_comment')
+    likeComment!: LikeComment[]
 } 

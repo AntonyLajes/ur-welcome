@@ -1,16 +1,18 @@
-import { date, immutableRelation, text } from "@nozbe/watermelondb/decorators";
+import { children, date, immutableRelation, text } from "@nozbe/watermelondb/decorators";
 import { Model } from "@nozbe/watermelondb";
 
 import { Post } from "./post-model";
 import { User } from "./user-model";
 import { Associations } from "@nozbe/watermelondb/Model";
+import { LikeComment } from "./like-comment";
 
-export class Comment extends Model{
+export class Comment extends Model {
 
     static table = 'comments'
     static associations: Associations = {
         posts: { type: 'belongs_to', key: 'post_id' },
-        users: { type: 'belongs_to', key: 'author_id' }
+        users: { type: 'belongs_to', key: 'author_id' },
+        like_comment: { type: 'has_many', foreignKey: 'comment_id' }
     }
 
     @text('content')
@@ -26,4 +28,7 @@ export class Comment extends Model{
     post!: Post
     @immutableRelation('users', 'author_id')
     author!: User
+
+    @children('like_comment')
+    likeComment!: LikeComment[]
 }
