@@ -6,6 +6,7 @@ import PostFooter from "./post-footer";
 import PostHeader from "./post-header";
 import { withObservables } from "@nozbe/watermelondb/react";
 import { User } from "@/src/data/local/database/models/user-model";
+import { Divider } from "../ui/divider";
 
 type Props = {
     post: PostModel,
@@ -20,7 +21,12 @@ function Post({ post, author }: Props) {
             space="sm"
         >
             <PostHeader author={author} postDatetime={post.createdAt}/>
-            <PostBody content={post.content}/>
+            <PostBody content={post.content} img={post.img}/>
+            {
+                !post.img && (
+                    <Divider className="bg-typography-50"/>
+                )
+            }
             <PostFooter postId={post.id}/>
         </VStack>
     )

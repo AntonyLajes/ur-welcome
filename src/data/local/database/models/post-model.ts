@@ -23,6 +23,9 @@ export class Post extends Model {
     @text('author_id')
     authorId!: string // Campo que vai ser relacionado ao User
 
+    @text('img')
+    img: string | undefined
+
     @relation('users', 'author_id') // Definindo a relação de "pertence a"
     author!: User
 

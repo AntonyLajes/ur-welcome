@@ -1,12 +1,14 @@
 import React from "react";
 import { Image } from "../ui/image";
 import { Text } from "../ui/text";
+import { Divider } from "../ui/divider";
 
 type Props = {
-    content: string
+    content: string,
+    img: string | undefined
 }
 
-export default function PostBody({ content }: Props) {
+export default function PostBody({ content, img }: Props) {
 
     return (
         <>
@@ -15,13 +17,17 @@ export default function PostBody({ content }: Props) {
             >
                 {content}
             </Text>
-            <Image
+            {
+                img && (
+                    <Image
                 className="w-full h-auto aspect-video rounded-lg"
                 source={{
-                    uri: 'https://static.todamateria.com.br/upload/pa/is/paisagem-natural-og.jpg'
+                    uri: img
                 }}
                 alt="Post Image."
             />
+                )
+            }
         </>
     )
 

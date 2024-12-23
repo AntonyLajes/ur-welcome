@@ -19,7 +19,7 @@ export default function PostFooter({postId }: PostFooterProps) {
 
     return (
         <HStack
-            className="justify-around px-1"
+            className="justify-around px-1 pt-1"
         >
             <PostFooterButton
                 mode="Curtir"

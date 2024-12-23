@@ -3,6 +3,23 @@ import { addColumns, createTable, schemaMigrations } from "@nozbe/watermelondb/S
 export default schemaMigrations({
     migrations: [
         {
+            toVersion: 6,
+            steps: [
+                addColumns(
+                    {
+                        table: 'posts',
+                        columns: [
+                            {
+                                name: 'img',
+                                type: 'string',
+                                isOptional: true
+                            }
+                        ]
+                    }
+                )
+            ]
+        },
+        {
             toVersion: 5,
             steps: [
                 createTable(

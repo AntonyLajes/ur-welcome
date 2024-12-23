@@ -16,6 +16,11 @@ export const postSchema = tableSchema({
             name: 'author_id',
             type: 'string',
             isIndexed: true
+        },
+        {
+            name: 'img',
+            type: 'string',
+            isOptional: true
         }
     ]
 })

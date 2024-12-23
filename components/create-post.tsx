@@ -51,9 +51,10 @@ export default function CreatePost() {
                 setShowDialog(true)
                 return
             }
-            await postRepository.insert({ content: data.content, user: userLogged })
+            await postRepository.insert({ content: data.content, user: userLogged, img: image })
             showToast(toast)
             reset()
+            setImage(undefined)
         } catch (error) {
             showToast(toast, `Ocorreu um erro ao publicar.`)
         }

@@ -12,6 +12,7 @@ export class PostRepository implements PostRepositoryUseCase{
                 await postDatabase.create(_ => {
                     _.authorId = post.user.id 
                     _.content = post.content
+                    _.img = post.img
                     _.createdAt = new Date()
                 })
             })
