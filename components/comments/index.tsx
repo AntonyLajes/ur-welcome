@@ -7,6 +7,8 @@ import { useUser } from "@/src/stores/user";
 
 import { FlatList } from "react-native";
 import Comment from "./comment";
+import { Text } from "../ui/text";
+import EmptyComments from "../empty-comments";
 
 type CommentsObservable = {
     comments: CommentModel[],
@@ -26,6 +28,7 @@ function FlatListComments({ comments, postId }: CommentsObservable) {
             data={comments}
             keyExtractor={(item) => item.id}
             renderItem={({item}) => <Comment key={item.id} comment={item} userLogged={userLogged}/>}
+            ListEmptyComponent={() => <EmptyComments />}
         />
     )
 

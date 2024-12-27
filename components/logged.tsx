@@ -25,13 +25,10 @@ export default function Logged() {
     const updatePicProfile = async () => {
         try {
             const result = await getGalleryImage()
-            console.log(`result =>`, result)
-            console.log(`userLogged =>`, userLogged)
             
             if(!result || !userLogged) return
             await userRepository.updatePicProfile(userLogged, result.uri)
             const updatedUser = await userRepository.selectById(userLogged.id)
-            console.log(`updatedUser =>`, updatedUser)
             if(!updatedUser) return
             setUserLogged(updatedUser)
         } catch (error) {

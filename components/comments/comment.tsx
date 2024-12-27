@@ -19,7 +19,9 @@ import { Pressable } from "../ui/pressable";
 import { Text } from "../ui/text";
 import { VStack } from "../ui/vstack";
 
-import { ThumbsUp } from "lucide-react-native"
+import { ThumbsUp, UserPenIcon } from "lucide-react-native"
+import { Avatar, AvatarFallbackText, AvatarImage } from "../ui/avatar";
+import { Box } from "../ui/box";
 
 type CommentObservableProps = {
     comment: CommentModel,
@@ -38,30 +40,30 @@ function Comment({ comment, author, liked, likeCount, userLogged }: CommentObser
 
     const isLiked = !!liked[0]
     const setShowDialog = useDialog(state => state.setShowDialog)
-    
+
     const likeCommentRepository = new LikeCommentRepository()
 
     const likeComment = async () => {
         try {
-            if(!userLogged) {
+            if (!userLogged) {
                 setShowDialog(true)
                 return
             }
-            if(isLiked){
+            if (isLiked) {
                 await likeCommentRepository.remove({
                     userId: userLogged?.id,
                     commentId: comment.id
                 })
-            }else{
+            } else {
                 await likeCommentRepository.insert({
                     userId: userLogged?.id,
                     commentId: comment.id
                 })
             }
         } catch (error) {
-            
+
         }
-    } 
+    }
 
     return (
         <VStack
@@ -71,13 +73,26 @@ function Comment({ comment, author, liked, likeCount, userLogged }: CommentObser
                 className="items-start"
                 space="sm"
             >
-                <Image
-                    className="rounded-full w-12 h-12"
-                    source={{
-                        uri: 'https://media.hswstatic.com/eyJidWNrZXQiOiJjb250ZW50Lmhzd3N0YXRpYy5jb20iLCJrZXkiOiJnaWZcL3BsYXlcLzBiN2Y0ZTliLWY1OWMtNDAyNC05ZjA2LWIzZGMxMjg1MGFiNy0xOTIwLTEwODAuanBnIiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjo4Mjh9fX0='
-                    }}
-                    alt="Profile Picture"
-                />
+                <Box
+                    className="rounded-full border"
+                >
+                    {author?.picUri ? (
+                        <Avatar>
+                            <AvatarFallbackText>{author?.name}</AvatarFallbackText>
+                            <AvatarImage
+                                source={{
+                                    uri: `${author.picUri}`
+                                }}
+                            />
+                        </Avatar>
+                    ) :
+                        <Box
+                            className="rounded-full w-8 h-8 justify-center items-center"
+                        >
+                            <Icon as={UserPenIcon} className="p-2" />
+                        </Box>
+                    }
+                </Box>
                 <VStack
                     className="flex-1 "
                     space="sm"
@@ -114,11 +129,6 @@ function Comment({ comment, author, liked, likeCount, userLogged }: CommentObser
                                     {isLiked ? 'Curtiu' : 'Curtir'}
                                 </Text>
                             </Pressable>
-                            {/* <Pressable>
-                                <Text>
-                                    Responder
-                                </Text>
-                            </Pressable> */}
                         </HStack>
                         <HStack
                             className="items-center"
@@ -139,7 +149,7 @@ function Comment({ comment, author, liked, likeCount, userLogged }: CommentObser
 
 }
 
-const enhance = withObservables(['comment', 'userLogged'], ({comment, userLogged}: {comment: CommentModel, userLogged: User | undefined}) => ({
+const enhance = withObservables(['comment', 'userLogged'], ({ comment, userLogged }: { comment: CommentModel, userLogged: User | undefined }) => ({
     comment,
     author: comment.author,
     liked: likeCommentDatabase.query(Q.where('user_id', userLogged?.id ?? ''), Q.where('comment_id', comment.id)),
